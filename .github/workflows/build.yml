@@ -1,4 +1,4 @@
-name: Build Addons
+name: Build Extensions
 
 on:
   workflow_dispatch:
@@ -45,18 +45,18 @@ jobs:
           echo "VERSION: ${VERSION}"
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
-      - name: Build addon packages
+      - name: Build Extensions Packages
         run: |
-          ./compile-addons.sh
+          ./compile-extensions.sh
           echo "${{ env.VERSION }}" > "VERSION"
-          zip -9 addons.zip -j *.addon VERSION
+          zip -9 extensions.zip -j *.extension VERSION
 
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: addons
+          name: extensions
           path: |
-            addons.zip
+            extensions.zip
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -64,5 +64,5 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: |
-            addons.zip
-            *.addon
+            extensions.zip
+            *.extension

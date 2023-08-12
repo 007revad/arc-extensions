@@ -33,7 +33,7 @@ function readConfigEntriesArray() {
 }
 
 ###############################################################################
-function compile-addon() {
+function compile-extension() {
   # Read manifest file
   MANIFEST="${1}/manifest.yml"
   if [ ! -f "${MANIFEST}" ]; then
@@ -161,21 +161,21 @@ function compile-addon() {
     # Clean
     rm -rf "${OUT_PATH}/${P}"
   done
-  # Create addon package
-  tar caf "${1}.addon" -C "${OUT_PATH}" .
+  # Create extension package
+  tar caf "${1}.extension" -C "${OUT_PATH}" .
   rm -rf "${OUT_PATH}"
 }
 
 # Main
 if [ $# -ge 1 ]; then
   for A in $@; do
-    compile-addon ${A%/}
+    compile-extensions ${A%/}
   done
 else
   while read -r D; do
     DRIVER=$(basename ${D})
     [ "${DRIVER:0:1}" = "." ] && continue
-    compile-addon ${DRIVER}
+    compile-extension ${DRIVER}
   done < <(find -maxdepth 1 -type d)
 fi
 wait
