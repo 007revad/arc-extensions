@@ -1,4 +1,4 @@
-# Addons for Arc Redpill Loader
+# Extensions for Arc Redpill Loader
 
 ### Links
 
