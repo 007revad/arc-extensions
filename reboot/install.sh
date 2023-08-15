@@ -10,7 +10,7 @@ if [ "${1}" = "late" ]; then
   echo "insert RebootToArpl task to esynoscheduler.db"
   export LD_LIBRARY_PATH=/tmpRoot/bin:/tmpRoot/lib
   /tmpRoot/bin/sqlite3 /tmpRoot/usr/syno/etc/esynoscheduler/esynoscheduler.db <<EOF
-DELETE FROM task WHERE task_name LIKE 'RebootToArpl';
-INSERT INTO task VALUES('RebootToArpl', '', 'shutdown', '', 0, 0, 0, 0, '', 0, '/usr/bin/arpl-reboot.sh "config"', 'script', '{}', '', '', '{}', '{}');
+DELETE FROM task WHERE task_name LIKE 'RebootToArc';
+INSERT INTO task VALUES('RebootToArc', '', 'shutdown', '', 0, 0, 0, 0, '', 0, '/usr/sbin/arc-reboot.sh "config"', 'script', '{}', '', '', '{}', '{}');
 EOF
 fi
