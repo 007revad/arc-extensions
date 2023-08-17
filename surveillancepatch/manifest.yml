@@ -1,7 +1,7 @@
 version: 1
 name: surveillancepatch
 beta: false
-description: "Patch License for SS 9.1.2-10854"
+description: "Patch License for SS 9.1.2-10854 (Non DVA)"
 all:
   install-script: "install.sh"
   copy: "all"
