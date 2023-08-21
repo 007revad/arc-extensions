@@ -1085,5 +1085,4 @@ if [[ $dsm -eq "6" ]] || [[ $rebootmsg == "yes" ]]; then
     echo -e "\nYou may need to ${Cyan}reboot the Synology${Off} to see the changes."
 fi
 
-
-exit
+exit 0

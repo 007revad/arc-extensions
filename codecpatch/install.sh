@@ -3,8 +3,6 @@
 if [ "${1}" = "late" ]; then
   echo "Creating service to exec Codecpatch"
   cp -vf /usr/sbin/codecpatch.sh /tmpRoot/usr/sbin/codecpatch.sh
-  chmod 755 /tmpRoot/usr/sbin/codecpatch.sh
-
   DEST="/tmpRoot/lib/systemd/system/codecpatch.service"
   echo "[Unit]"                               >${DEST}
   echo "Description=Patch synocodectool"     >>${DEST}

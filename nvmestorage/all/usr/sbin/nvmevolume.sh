@@ -411,4 +411,4 @@ for nvme in /run/synostorage/disks/nvme*; do
     echo 1 > /run/synostorage/disks/"$(basename -- "$nvme")"/m2_pool_support
 done
 
-exit
+exit 0

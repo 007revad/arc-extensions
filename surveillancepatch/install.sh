@@ -6,7 +6,6 @@ if [ "${1}" = "late" ]; then
   cp -vf /usr/lib/libssutils.so /tmpRoot/usr/lib/libssutils.so
   cp -vf /usr/lib/license.sh /tmpRoot/usr/lib/license.sh
   cp -vf /usr/lib/S82surveillance.sh /tmpRoot/usr/lib/S82surveillance.sh
-
   DEST="/tmpRoot/lib/systemd/system/surveillancepatch.service"
   echo "[Unit]"                                                                >${DEST}
   echo "Description=Surveillance Patch"                                       >>${DEST}

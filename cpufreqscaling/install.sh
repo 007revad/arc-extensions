@@ -5,10 +5,6 @@ if [ "${1}" = "late" ]; then
   cp -vf /usr/sbin/scaler.sh /tmpRoot/usr/sbin/scaler.sh
   cp -vf /usr/sbin/unscaler.sh /tmpRoot/usr/sbin/unscaler.sh
   cp -vf /usr/sbin/rescaler.sh /tmpRoot/usr/sbin/rescaler.sh
-  chmod 755 /tmpRoot/usr/sbin/scaler.sh
-  chmod 755 /tmpRoot/usr/sbin/unscaler.sh
-  chmod 755 /tmpRoot/usr/sbin/rescaler.sh
-
   DEST="/tmpRoot/lib/systemd/system/cpufreqscaling.service"
   echo "[Unit]"                                                                >${DEST}
   echo "Description=Enable CPU Freq scaling"                                  >>${DEST}

@@ -3,8 +3,6 @@
 if [ "${1}" = "late" ]; then
   echo "Creating service to exec CPU Info"
   cp -vf /usr/sbin/cpuinfo.sh /tmpRoot/usr/sbin/cpuinfo.sh
-  chmod 755 /tmpRoot/usr/sbin/cpuinfo.sh
-
   DEST="/tmpRoot/lib/systemd/system/cpuinfo.service"
   echo "[Unit]"                                                                >${DEST}
   echo "Description=Enable CPU Info"                                          >>${DEST}

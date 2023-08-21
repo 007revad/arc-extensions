@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ -d "/var/packages/CodecPack" ]; then
     /usr/syno/bin/synopkg stop CodecPack
@@ -64,3 +64,5 @@ if [ -d "/var/packages/CodecPack" ]; then
     sleep 3
     /usr/syno/bin/synopkg start CodecPack
 fi
+
+exit 0

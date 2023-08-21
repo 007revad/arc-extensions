@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/usr/bin/env bash
 
 scriptver="23.7.2"
 script=Codecpatch

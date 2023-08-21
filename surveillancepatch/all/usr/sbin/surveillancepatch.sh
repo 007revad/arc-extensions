@@ -40,3 +40,5 @@ if [ -d "${SSPATH}" ]; then
     /usr/syno/bin/synopkg start SurveillanceStation
 
 fi
+
+exit 0
