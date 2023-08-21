@@ -1,25 +1,20 @@
 version: 1
 name: storagepanel
-description: "Modify storage panel (default: RACK_24_Bay M2X1)"
+description: "Modify storage panel (default: RACK_24_Bay 1X8)"
 all:
   install-script: "install.sh"
   copy: "all"
 available-for:
   apollolake-4.4.180:
   apollolake-4.4.302:
-  bromolow-3.10.108:
   broadwell-4.4.180:
   broadwell-4.4.302:
   broadwellnk-4.4.180:
   broadwellnk-4.4.302:
-  epyc7002-7.1-5.10.55:
-  epyc7002-7.2-5.10.55:
   denverton-4.4.180:
   denverton-4.4.302:
   geminilake-4.4.180:
   geminilake-4.4.302:
-  purley-4.4.180:
-  purley-4.4.302:
   r1000-4.4.180:
   r1000-4.4.302:
   v1000-4.4.180:
