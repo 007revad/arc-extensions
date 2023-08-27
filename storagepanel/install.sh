@@ -2,7 +2,7 @@
 
 if [ "${1}" = "late" ]; then
   echo "Installing daemon for storagepanel"
-  cp -vf /usr/sbin/storagepanel.sh /tmpRoot/usr/sbin/storagepanel.sh
+  cp -vf /usr/bin/storagepanel.sh /tmpRoot/usr/bin/storagepanel.sh
   shift
   DEST="/tmpRoot/lib/systemd/system/storagepanel.service"
   echo "[Unit]"                                          >${DEST}
@@ -12,7 +12,7 @@ if [ "${1}" = "late" ]; then
   echo "[Service]"                                      >>${DEST}
   echo "Type=oneshot"                                   >>${DEST}
   echo "RemainAfterExit=true"                           >>${DEST}
-  echo "ExecStart=/usr/sbin/storagepanel.sh $@"         >>${DEST}
+  echo "ExecStart=/usr/bin/storagepanel.sh $@"          >>${DEST}
   echo                                                  >>${DEST}
   echo "[Install]"                                      >>${DEST}
   echo "WantedBy=multi-user.target"                     >>${DEST}
