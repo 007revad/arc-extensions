@@ -1,11 +1,26 @@
 #!/usr/bin/env bash
+#------------------------------------------------------------------------------
+# Enables using non-Synology NVMe drives so you can create a storage pool
+# and volume on any M.2 drive(s) entirely in DSM Storage Manager.
+#
+# Github: https://github.com/007revad/Synology_enable_M2_volume
+# Script verified at https://www.shellcheck.net/
+# Tested on DSM 7.2
+#
+# To run in a shell (replace /volume1/scripts/ with path to script):
+# sudo /volume1/scripts/syno_enable_m2_volume.sh
+#------------------------------------------------------------------------------
 
-# Check BASH variable is is non-empty and posix mode is off, else abort with error.
-[ "$BASH" ] && ! shopt -qo posix || {
+scriptver="v1.0.8"
+script=Synology_enable_M2_volume
+repo="007revad/Synology_enable_M2_volume"
+
+# Check BASH variable is bash
+if [ ! "$(basename "$BASH")" = bash ]; then
+    echo "This is a bash script. Do not run it with $(basename "$BASH")"
     printf \\a
-    printf >&2 "This is a bash script, don't run it with sh\n"
     exit 1
-}
+fi
 
 #echo -e "bash version: $(bash --version | head -1 | cut -d' ' -f4)\n"  # debug
 
@@ -27,15 +42,28 @@ ding(){
 
 usage(){
     cat <<EOF
+$script $scriptver - by 007revad
+
 Usage: $(basename "$0") [options]
 
 Options:
   -c, --check      Check value in file and backup file
   -r, --restore    Restore backup to undo changes
   -h, --help       Show this help message
+  -v, --version    Show the script version
   
 EOF
 }
+
+
+scriptversion(){
+    cat <<EOF
+$script $scriptver - by 007revad
+
+See https://github.com/$repo
+EOF
+}
+
 
 # Save options used
 args=("$@")
@@ -55,6 +83,10 @@ if options="$(getopt -o abcdefghijklmnopqrstuvwxyz0123456789 -a \
                 ;;
             -h|--help)          # Show usage options
                 usage
+                exit
+                ;;
+            -v|--version)       # Show script version
+                scriptversion
                 exit
                 ;;
             -l|--log)           # Log
@@ -116,6 +148,11 @@ if ! which bc >/dev/null ; then
     exit
 fi
 
+
+# Show script version
+#echo -e "$script $scriptver\ngithub.com/$repo\n"
+echo "$script $scriptver"
+
 # Get NAS model
 model=$(cat /proc/sys/kernel/syno_hw_version)
 
@@ -132,6 +169,144 @@ echo -e "$model DSM $productversion-$buildnumber$smallfix $buildphase\n"
 
 # Show options used
 echo "Using options: ${args[*]}"
+
+FUNC_ANNOTATION () {
+#------------------------------------------------------------------------------
+# Check latest release with GitHub API
+
+get_latest_release() {
+    # Curl timeout options:
+    # https://unix.stackexchange.com/questions/94604/does-curl-have-a-timeout
+    curl --silent -m 10 --connect-timeout 5 \
+        "https://api.github.com/repos/$1/releases/latest" |
+    grep '"tag_name":' |          # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'  # Pluck JSON value
+}
+
+tag=$(get_latest_release "$repo")
+shorttag="${tag:1}"
+#scriptpath=$(dirname -- "$0")
+
+# Get script location
+# https://stackoverflow.com/questions/59895/
+source=${BASH_SOURCE[0]}
+while [ -L "$source" ]; do # Resolve $source until the file is no longer a symlink
+    scriptpath=$( cd -P "$( dirname "$source" )" >/dev/null 2>&1 && pwd )
+    source=$(readlink "$source")
+    # If $source was a relative symlink, we need to resolve it 
+    # relative to the path where the symlink file was located
+    [[ $source != /* ]] && source=$scriptpath/$source
+done
+scriptpath=$( cd -P "$( dirname "$source" )" >/dev/null 2>&1 && pwd )
+#echo "Script location: $scriptpath"  # debug
+
+
+if ! printf "%s\n%s\n" "$tag" "$scriptver" |
+        sort --check --version-sort &> /dev/null ; then
+    echo -e "${Cyan}There is a newer version of this script available.${Off}"
+    echo -e "Current version: ${scriptver}\nLatest version:  $tag"
+    if [[ -f $scriptpath/$script-$shorttag.tar.gz ]]; then
+        # They have the latest version tar.gz downloaded but are using older version
+        echo "https://github.com/$repo/releases/latest"
+        sleep 10
+    elif [[ -d $scriptpath/$script-$shorttag ]]; then
+        # They have the latest version extracted but are using older version
+        echo "https://github.com/$repo/releases/latest"
+        sleep 10
+    else
+        echo -e "${Cyan}Do you want to download $tag now?${Off} [y/n]"
+        read -r -t 30 reply
+        if [[ ${reply,,} == "y" ]]; then
+            if cd /tmp; then
+                url="https://github.com/$repo/archive/refs/tags/$tag.tar.gz"
+                if ! curl -LJO -m 30 --connect-timeout 5 "$url";
+                then
+                    echo -e "${Error}ERROR ${Off} Failed to download"\
+                        "$script-$shorttag.tar.gz!"
+                else
+                    if [[ -f /tmp/$script-$shorttag.tar.gz ]]; then
+                        # Extract tar file to /tmp/<script-name>
+                        if ! tar -xf "/tmp/$script-$shorttag.tar.gz" -C "/tmp"; then
+                            echo -e "${Error}ERROR ${Off} Failed to"\
+                                "extract $script-$shorttag.tar.gz!"
+                        else
+                            # Copy new script sh files to script location
+                            if ! cp -p "/tmp/$script-$shorttag/"*.sh "$scriptpath"; then
+                                copyerr=1
+                                echo -e "${Error}ERROR ${Off} Failed to copy"\
+                                    "$script-$shorttag .sh file(s) to:\n $scriptpath"
+                            else                   
+                                # Set permsissions on CHANGES.txt
+                                if ! chmod 744 "$scriptpath/"*.sh ; then
+                                    permerr=1
+                                    echo -e "${Error}ERROR ${Off} Failed to set permissions on:"
+                                    echo "$scriptpath *.sh file(s)"
+                                fi
+                            fi
+
+                            # Copy new CHANGES.txt file to script location
+                            if ! cp -p "/tmp/$script-$shorttag/CHANGES.txt" "$scriptpath"; then
+                                copyerr=1
+                                echo -e "${Error}ERROR ${Off} Failed to copy"\
+                                    "$script-$shorttag/CHANGES.txt to:\n $scriptpath"
+                            else                   
+                                # Set permsissions on CHANGES.txt
+                                if ! chmod 744 "$scriptpath/CHANGES.txt"; then
+                                    permerr=1
+                                    echo -e "${Error}ERROR ${Off} Failed to set permissions on:"
+                                    echo "$scriptpath/CHANGES.txt"
+                                fi
+                            fi
+
+                            # Delete downloaded .tar.gz file
+                            if ! rm "/tmp/$script-$shorttag.tar.gz"; then
+                                #delerr=1
+                                echo -e "${Error}ERROR ${Off} Failed to delete"\
+                                    "downloaded /tmp/$script-$shorttag.tar.gz!"
+                            fi
+
+                            # Delete extracted tmp files
+                            if ! rm -r "/tmp/$script-$shorttag"; then
+                                #delerr=1
+                                echo -e "${Error}ERROR ${Off} Failed to delete"\
+                                    "downloaded /tmp/$script-$shorttag!"
+                            fi
+
+                            # Notify of success (if there were no errors)
+                            if [[ $copyerr != 1 ]] && [[ $permerr != 1 ]]; then
+                                echo -e "\n$tag and changes.txt downloaded to:"\
+                                    "$scriptpath"
+
+                                # Reload script
+                                printf -- '-%.0s' {1..79}; echo  # print 79 -
+                                exec "$0" "${args[@]}"
+                            fi
+                        fi
+                    else
+                        echo -e "${Error}ERROR ${Off}"\
+                            "/tmp/$script-$shorttag.tar.gz not found!"
+                        #ls /tmp | grep "$script"  # debug
+                    fi
+                fi
+            else
+                echo -e "${Error}ERROR ${Off} Failed to cd to /tmp!"
+            fi
+        fi
+    fi
+fi
+
+rebootmsg(){
+    # Reboot prompt
+    echo -e "\n${Cyan}The Synology needs to restart.${Off}"
+    echo -e "Type ${Cyan}yes${Off} to reboot now."
+    echo -e "Type anything else to quit (if you will restart it yourself)."
+    read -r -t 10 answer
+    if [[ ${answer,,} != "yes" ]]; then exit; fi
+
+    # Reboot in the background so user can see DSM's "going down" message
+    reboot &
+}
+}
 
 #----------------------------------------------------------
 # Check file exists
@@ -408,7 +583,15 @@ fi
 # Enable creating M.2 storage pool and volume in Storage Manager
 # for currently installed NVMe drives
 for nvme in /run/synostorage/disks/nvme*; do
-    echo 1 > /run/synostorage/disks/"$(basename -- "$nvme")"/m2_pool_support
+    if [[ -f /run/synostorage/disks/"$(basename -- "$1")"/m2_pool_support ]]; then
+        echo 1 > /run/synostorage/disks/"$(basename -- "$nvme")"/m2_pool_support
+    fi
 done
 
-exit 0
+
+#----------------------------------------------------------
+# Reboot
+
+#rebootmsg
+
+exit
