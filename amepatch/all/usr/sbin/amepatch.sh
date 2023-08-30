@@ -13,17 +13,19 @@ if [ -d "/var/packages/CodecPack" ]; then
     lic="/usr/syno/etc/license/data/ame/offline_license.json"
     licsig="/usr/syno/etc/license/data/ame/offline_license.sig"
 
-    if [ "${majorversion}" -eq "7" ] && [ "${minorversion}" -le "1" ]; then
-        expected_checksum='fcc1084f4eadcf5855e6e8494fb79e23'
+    # Comprobar que el fichero a parchear sea exactamente la misma versión que se estudió. 
+    hash_to_check="$(md5sum -b "$so" | awk '{print $1}')"
+
+    if [ "$hash_to_check" = "fcc1084f4eadcf5855e6e8494fb79e23" ]; then
         hex_values=('1F28' '48F5' '4921' '4953' '4975' '9AC8')
         content= '[{"appType": 14, "appName": "ame", "follow": ["device"], "server_time": 1666000000, "registered_at": 1651000000, "expireTime": 0, "status": "valid", "firstActTime": 1651000001, "extension_gid": null, "licenseCode": "0", "duration": 1576800000, "attribute": {"codec": "hevc", "type": "free"}, "licenseContent": 1}, {"appType": 14, "appName": "ame", "follow": ["device"], "server_time": 1666000000, "registered_at": 1651000000, "expireTime": 0, "status": "valid", "firstActTime": 1651000001, "extension_gid": null, "licenseCode": "0", "duration": 1576800000, "attribute": {"codec": "aac", "type": "free"}, "licenseContent": 1}]'
-    elif [ "${majorversion}" -eq "7" ] && [ "${minorversion}" -eq "2" ]; then
-        expected_checksum='09e3adeafe85b353c9427d93ef0185e9'
+    elif [ "$hash_to_check" = "923fd0d58e79b7dc0f6c377547545930" ]; then
+        hex_values=('1F28' '48F5' '4921' '4953' '4975' '9AC8')
+        content= '[{"appType": 14, "appName": "ame", "follow": ["device"], "server_time": 1666000000, "registered_at": 1651000000, "expireTime": 0, "status": "valid", "firstActTime": 1651000001, "extension_gid": null, "licenseCode": "0", "duration": 1576800000, "attribute": {"codec": "hevc", "type": "free"}, "licenseContent": 1}, {"appType": 14, "appName": "ame", "follow": ["device"], "server_time": 1666000000, "registered_at": 1651000000, "expireTime": 0, "status": "valid", "firstActTime": 1651000001, "extension_gid": null, "licenseCode": "0", "duration": 1576800000, "attribute": {"codec": "aac", "type": "free"}, "licenseContent": 1}]'
+    elif [ "$hash_to_check" = "09e3adeafe85b353c9427d93ef0185e9" ]; then
         hex_values=('3718' '60A5' '60D1' '6111' '6137' 'B5F0')
         content='[{"attribute": {"codec": "hevc", "type": "free"}, "status": "valid", "extension_gid": null, "expireTime": 0, "appName": "ame", "follow": ["device"], "duration": 1576800000, "appType": 14, "licenseContent": 1, "registered_at": 1649315995, "server_time": 1685421618, "firstActTime": 1649315995, "licenseCode": "0"}, {"attribute": {"codec": "aac", "type": "free"}, "status": "valid", "extension_gid": null, "expireTime": 0, "appName": "ame", "follow": ["device"], "duration": 1576800000, "appType": 14, "licenseContent": 1, "registered_at": 1649315995, "server_time": 1685421618, "firstActTime": 1649315995, "licenseCode": "0"}]'
-    fi
-
-    if [ "$(md5sum -b "$so" | awk '{print $1}')" != "$expected_checksum" ]; then
+    else
         echo "MD5 mismatch"
         exit 1
     fi
@@ -41,17 +43,17 @@ if [ -d "/var/packages/CodecPack" ]; then
     mkdir -p "$(dirname "${lic}")"
     echo "${content}" >"${lic}"
 
-    if [ -f /tmpRoot/volume1/@appstore/CodecPack/apparmor ]; then
-        apparmor=/tmpRoot/volume1/@appstore/CodecPack/apparmor
-    else
-        apparmor=/volume1/@appstore/CodecPack/apparmor
-    fi
-    /usr/syno/etc/rc.sysv/apparmor.sh remove_packages_profile 0 CodecPack
-    # disable apparmor check for AME
-    mv -f "${apparmor}" "${apparmor}.bak"
-    if [ -e "${apparmor}" ]; then
-        mv -f "${apparmor}" "${apparmor}.bak"
-    fi
+    #if [ -f /tmpRoot/volume1/@appstore/CodecPack/apparmor ]; then
+    #    apparmor=/tmpRoot/volume1/@appstore/CodecPack/apparmor
+    #else
+    #    apparmor=/volume1/@appstore/CodecPack/apparmor
+    #fi
+    #/usr/syno/etc/rc.sysv/apparmor.sh remove_packages_profile 0 CodecPack
+    ## disable apparmor check for AME
+    #mv -f "${apparmor}" "${apparmor}.bak"
+    #if [ -e "${apparmor}" ]; then
+    #    mv -f "${apparmor}" "${apparmor}.bak"
+    #fi
 
 	if "${cp_usr_path}/bin/synoame-bin-check-license"; then
         ${cp_usr_path}/bin/synoame-bin-auto-install-needed-codec
