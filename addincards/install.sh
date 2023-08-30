@@ -2,7 +2,7 @@
 
 if [ "${1}" = "late" ]; then
   echo "Installing daemon for Addincards"
-  cp -vf /usr/bin/addincards.sh /tmpRoot/usr/bin/addincards.sh
+  cp -vf /usr/sbin/addincards.sh /tmpRoot/usr/sbin/addincards.sh
 
   DEST="/tmpRoot/lib/systemd/system/addincards.service"
   echo "[Unit]"                                        >${DEST}
@@ -12,7 +12,7 @@ if [ "${1}" = "late" ]; then
   echo "[Service]"                                    >>${DEST}
   echo "Type=oneshot"                                 >>${DEST}
   echo "RemainAfterExit=true"                         >>${DEST}
-  echo "ExecStart=/usr/bin/addincards.sh"             >>${DEST}
+  echo "ExecStart=/usr/sbin/addincards.sh"            >>${DEST}
   echo                                                >>${DEST}
   echo "[Install]"                                    >>${DEST}
   echo "WantedBy=multi-user.target"                   >>${DEST}

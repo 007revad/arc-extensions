@@ -3,7 +3,7 @@
 if [ "${1}" = "late" ]; then
   echo "NVMeStorage: Installing daemon for nvmestorage"
   cp -vf /usr/bin/bc /tmpRoot/usr/bin/bc
-  cp -vf /usr/bin/nvmevolume.sh /tmpRoot/usr/bin/nvmevolume.sh
+  cp -vf /usr/sbin/nvmevolume.sh /tmpRoot/usr/sbin/nvmevolume.sh
   DEST="/tmpRoot/lib/systemd/system/nvmevolume.service"
   echo "[Unit]"                                    >${DEST}
   echo "Description=Enable M2 volume"             >>${DEST}
@@ -12,7 +12,7 @@ if [ "${1}" = "late" ]; then
   echo "[Service]"                                >>${DEST}
   echo "Type=oneshot"                             >>${DEST}
   echo "RemainAfterExit=true"                     >>${DEST}
-  echo "ExecStart=/usr/bin/nvmevolume.sh"         >>${DEST}
+  echo "ExecStart=/usr/sbin/nvmevolume.sh"        >>${DEST}
   echo                                            >>${DEST}
   echo "[Install]"                                >>${DEST}
   echo "WantedBy=multi-user.target"               >>${DEST}

@@ -10,7 +10,7 @@ if [ -d "${SSPATH}" ]; then
     SPATCH="/usr/lib"
 
     /usr/syno/bin/synopkg stop SurveillanceStation
-    sleep 5
+    sleep 20
 
     rm -f "${PATHLIB}/libssutils.so"
     cp -f "${SPATCH}/libssutils.so" "${PATHLIB}/libssutils.so"
