@@ -2,7 +2,7 @@
 
 if [ "${1}" = "late" ]; then
   echo "Installing daemon for Usbids"
-  cp -vf /usr/bin/usbids.sh /tmpRoot/usr/bin/usbids.sh
+  cp -vf /usr/sbin/usbids.sh /tmpRoot/usr/sbin/usbids.sh
 
   DEST="/tmpRoot/lib/systemd/system/usbids.service"
   echo "[Unit]"                                        >${DEST}
@@ -12,7 +12,7 @@ if [ "${1}" = "late" ]; then
   echo "[Service]"                                    >>${DEST}
   echo "Type=oneshot"                                 >>${DEST}
   echo "RemainAfterExit=true"                         >>${DEST}
-  echo "ExecStart=/usr/bin/usbids.sh"                 >>${DEST}
+  echo "ExecStart=/usr/sbin/usbids.sh"                >>${DEST}
   echo                                                >>${DEST}
   echo "[Install]"                                    >>${DEST}
   echo "WantedBy=multi-user.target"                   >>${DEST}
