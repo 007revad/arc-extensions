@@ -2,6 +2,6 @@
 while true
 do
 sleep 3600
-/var/packages/SurveillanceStation/target/bin/ssctl restart
+/var/packages/SurveillanceStation/target/bin/ssctl start
 
 done
