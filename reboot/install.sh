@@ -1,7 +1,12 @@
 #!/usr/bin/env ash
 
 if [ "${1}" = "late" ]; then
-  echo "Installing addon reboottoarpl - late"
+  echo "Installing addon reboottoarc - late"
+
+  cp -vf /usr/sbin/arpl-reboot.sh /tmpRoot/usr/sbin
+  cp -vf /usr/sbin/arc-reboot.sh /tmpRoot/usr/sbin
+  cp -vf /usr/sbin/grub-editenv /tmpRoot/usr/sbin
+
   if [ ! -f /tmpRoot/usr/syno/etc/esynoscheduler/esynoscheduler.db ]; then
     echo "copy esynoscheduler.db"
     mkdir -p /tmpRoot/usr/syno/etc/esynoscheduler
