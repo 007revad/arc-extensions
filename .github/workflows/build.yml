@@ -11,6 +11,10 @@ on:
         description: "pre release"
         default: false
         type: boolean
+      clean:
+        description: "clean"
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -20,6 +24,14 @@ jobs:
         uses: actions/checkout@main
         with:
           fetch-depth: 0
+
+      - name: Clean Old
+        if: inputs.clean == true
+        uses: Nats-ji/delete-old-releases@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          keep-count: 10
+          keep-old-minor-releases: false
 
       - name: Changelog
         uses: Bullrich/generate-release-changelog@master
