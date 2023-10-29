@@ -3,9 +3,7 @@
 if [ -d "/var/packages/CodecPack" ]; then
     /usr/syno/bin/synopkg stop CodecPack
     sleep 10
-
-    . /etc.defaults/VERSION
-
+    
     values=('669066909066906690' 'B801000000' '30')
     indices=(0 1 1 1 1 2)
     cp_usr_path="/var/packages/CodecPack/target/usr"
@@ -43,20 +41,9 @@ if [ -d "/var/packages/CodecPack" ]; then
     mkdir -p "$(dirname "${lic}")"
     echo "${content}" >"${lic}"
 
-    #if [ -f /tmpRoot/volume1/@appstore/CodecPack/apparmor ]; then
-    #    apparmor=/tmpRoot/volume1/@appstore/CodecPack/apparmor
-    #else
-    #    apparmor=/volume1/@appstore/CodecPack/apparmor
-    #fi
-    #/usr/syno/etc/rc.sysv/apparmor.sh remove_packages_profile 0 CodecPack
-    ## disable apparmor check for AME
-    #mv -f "${apparmor}" "${apparmor}.bak"
-    #if [ -e "${apparmor}" ]; then
-    #    mv -f "${apparmor}" "${apparmor}.bak"
-    #fi
-
 	if "${cp_usr_path}/bin/synoame-bin-check-license"; then
         ${cp_usr_path}/bin/synoame-bin-auto-install-needed-codec
+        "$cp_usr_path/bin/synoame-bin-auto-install-needed-codec"
         echo -e "AME Patch: Successful!"
     else
         echo -e "AME Patch: Unsuccessful!"
