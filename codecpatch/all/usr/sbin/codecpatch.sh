@@ -1,8 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/ash
 
-scriptver="23.7.2"
-script=Codecpatch
-repo="AuxXxilium/arc-addons"
+# https://github.com/wirgen/synocodectool-patch
+# 06/2023
 
 set -eo pipefail;
 shopt -s nullglob;
@@ -237,11 +236,11 @@ rollback () {
 }
 
 # Get updated patches
-curl -L "https://raw.githubusercontent.com/wjz304/arpl-addons/main/codecpatch/patches" -o /tmp/patches
+curl -L "https://raw.githubusercontent.com/AuxXxilium/arc-extensions/main/codecpatch/patches" -o /tmp/patches
 source /tmp/patches
 
 #main()
-if (( $EUID != 0 )); then
+if [ ! ${USER} = "root" ]; then
     echo "Please run as root"
     exit 1
 fi
