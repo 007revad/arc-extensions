@@ -3,7 +3,9 @@
 if [ -d "/var/packages/CodecPack" ]; then
     /usr/syno/bin/synopkg stop CodecPack
     sleep 10
-    
+
+    . /etc.defaults/VERSION
+
     values=('669066909066906690' 'B801000000' '30')
     indices=(0 1 1 1 1 2)
     cp_usr_path="/var/packages/CodecPack/target/usr"
@@ -43,7 +45,6 @@ if [ -d "/var/packages/CodecPack" ]; then
 
 	if "${cp_usr_path}/bin/synoame-bin-check-license"; then
         ${cp_usr_path}/bin/synoame-bin-auto-install-needed-codec
-        "$cp_usr_path/bin/synoame-bin-auto-install-needed-codec"
         echo -e "AME Patch: Successful!"
     else
         echo -e "AME Patch: Unsuccessful!"
