@@ -12,8 +12,7 @@ if [ -d "/var/packages/CodecPack" ]; then
     so="$cp_usr_path/lib/libsynoame-license.so"
     lic="/usr/syno/etc/license/data/ame/offline_license.json"
     licsig="/usr/syno/etc/license/data/ame/offline_license.sig"
-
-    # Comprobar que el fichero a parchear sea exactamente la misma versión que se estudió. 
+ 
     hash_to_check="$(md5sum -b "$so" | awk '{print $1}')"
 
     if [ "$hash_to_check" = "fcc1084f4eadcf5855e6e8494fb79e23" ]; then
