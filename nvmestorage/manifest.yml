@@ -1,6 +1,6 @@
 version: 1
 name: NVMeVolume
-description: "Enable M2 as volume device"
+description: "Enable M2 as volume device (for non supported Models)"
 all:
   install-script: "install.sh"
   copy: "all"
